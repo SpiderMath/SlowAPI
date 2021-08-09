@@ -1,4 +1,5 @@
 import express from "express";
+import Logger from "./Logger";
 
 interface ConstructorArgs {
 	port?: number
@@ -7,6 +8,7 @@ interface ConstructorArgs {
 export default class App {
 	public main = express();
 	public port: number;
+	public logger = new Logger();
 
 	constructor(args: ConstructorArgs) {
 		const options = {
@@ -21,6 +23,6 @@ export default class App {
 	}
 
 	public async start() {
- 		this.main.listen(this.port, () => { console.log(`Listening for API Calls on port ${this.port}!`); });
+ 		this.main.listen(this.port, () => this.logger.success("server", `Listening for API calls on port ${this.port}`));
 	}
 };
