@@ -32,5 +32,6 @@ export default class TestRoute extends BaseRoute {
 	}
 
 	public async run(req: Request, res: Response, args: Argument) {
+		res.send(args.getBoolean("booliean") + args.getString("strong") + args.getNumber("nomber").toString());
 	}
 };

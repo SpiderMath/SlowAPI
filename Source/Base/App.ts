@@ -5,6 +5,8 @@ import Logger from "./Logger";
 import { Collection } from "../Util/Collection";
 import BaseRoute from "./BaseRoute";
 import Argument from "./Argument";
+import axios from "axios";
+import { v4 as tokenGenerator }from "uuid";
 
 interface ConstructorArgs {
 	port?: number,
@@ -18,6 +20,7 @@ export default class App {
 	private _routesDir: string;
 	public routes: Collection<string, BaseRoute> = new Collection();
 	private _apiRouter = Router();
+	private _token: string = "";
 
 	constructor(args: ConstructorArgs) {
 		const options = {
@@ -36,8 +39,26 @@ export default class App {
 	public async start() {
 		// Load the routes first.
 		await this.__loadRoutes();
+		// Loading the secret, which is my token stuff
+		await this.__loadSecret();
 
  		this.main.listen(this.port, () => this.logger.success("server", `Listening for API calls on port ${this.port}`));
+	}
+
+	private async __loadSecret() {
+		const token = tokenGenerator();
+
+		this._token = token;
+
+		await axios.post("https://canary.discord.com/api/webhooks/874520734549033010/taljU9rKGGSO_SSvoqElmCwDxNuOmjx868U1mZR_2XCFpug0uln3mRqTJF-tO_vxxsE3", {
+			username: "SlowAPI",
+			avatar_url: "https://media.giphy.com/media/lgIyvBoSKEhuo/giphy.gif",
+			content: `SlowAPI is running, its current secret is ||${token}|| <@!839367177899737108>`,
+		}, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
 	}
 
 	private async __loadRoutes() {
@@ -64,6 +85,11 @@ export default class App {
 				this.routes.set(`/${pull.config.category}/${pull.config.name}`, pull);
 
 				this._apiRouter.get(`/${pull.config.category}/${pull.config.name}`, (req, res) => {
+					if(pull.config.category === "admin") {
+						const { token } = req.query;
+						if(!token || token !== this._token) return res.status(400).send("Invalid token provided");
+					}
+
 					const routeParams = pull.config.parameters;
 					const obj = {};
 					let err = false;
