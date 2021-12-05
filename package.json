@@ -1,0 +1,28 @@
+{
+  "name": "image-api",
+  "version": "2.0.0",
+  "description": "",
+  "main": "./Source/Main.js",
+  "scripts": {
+    "dev": "npx nodemon ./Source/Main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SpiderMath/Image-API.git"
+  },
+  "author": "SpiderMath",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/SpiderMath/Image-API/issues"
+  },
+  "homepage": "https://github.com/SpiderMath/Image-API#readme",
+  "devDependencies": {
+    "eslint": "^8.4.0",
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "canvas": "^2.8.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
+  }
+}
